@@ -51,8 +51,13 @@ class MemoryCore:
         db.add(entry)
         db.commit()
 
-        vector = (await embed_texts([text]))[0]
-        await vector_store.upsert(user_id, vector, text, namespace, source_agent)
+        # SQL is the source of truth; the vector index is derived. If Qdrant is
+        # unreachable, keep the record and log — a reindex job can backfill.
+        try:
+            vector = (await embed_texts([text]))[0]
+            await vector_store.upsert(user_id, vector, text, namespace, source_agent)
+        except Exception as exc:
+            log.warning("memory_vector_index_failed", entry_id=entry.id, error=str(exc))
         log.info("memory_stored", namespace=namespace, agent=source_agent)
         return entry
 

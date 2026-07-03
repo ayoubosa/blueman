@@ -21,6 +21,7 @@ class VectorStore:
         self._client = AsyncQdrantClient(
             url=settings.qdrant_url,
             api_key=settings.qdrant_api_key or None,
+            check_compatibility=False,  # skip network ping at construction time
         )
 
     @staticmethod

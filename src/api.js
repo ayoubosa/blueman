@@ -9,7 +9,20 @@
  * isLive() to show connection state.
  */
 
+import { authToken } from './auth.js'
+
 const TIMEOUT_MS = 6000
+
+/** Auth + content headers for every backend call. Product routes on the
+ *  live backend require a Bearer token — without it every request 401s
+ *  and the UI would be stuck in demo mode even after signing in. */
+function buildHeaders(hasBody) {
+  const headers = {}
+  if (hasBody) headers['Content-Type'] = 'application/json'
+  const token = authToken()
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  return headers
+}
 
 async function req(path, { method = 'GET', body, signal } = {}) {
   const ctrl = new AbortController()
@@ -17,7 +30,7 @@ async function req(path, { method = 'GET', body, signal } = {}) {
   try {
     const res = await fetch(path, {
       method,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      headers: buildHeaders(!!body),
       body: body ? JSON.stringify(body) : undefined,
       signal: signal || ctrl.signal,
     })
@@ -93,7 +106,7 @@ export async function* chatStream(messages, { model, temperature } = {}, fallbac
   try {
     res = await fetch('/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: buildHeaders(true),
       body: JSON.stringify({ model: model || 'default', messages, temperature, stream: true }),
     })
     if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`)

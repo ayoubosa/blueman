@@ -34,6 +34,8 @@ function emit() {
 }
 
 async function sha256Hex(text) {
+  // crypto.subtle only exists in secure contexts (https / localhost).
+  if (!globalThis.crypto?.subtle) throw new Error('insecure-context')
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
@@ -61,7 +63,12 @@ export async function loginWithBackend(email, password) {
 
 /** Path 2 — private access key (hash-checked locally). Returns { ok, error }. */
 export async function loginWithAccessKey(key) {
-  const hash = await sha256Hex(key.trim())
+  let hash
+  try {
+    hash = await sha256Hex(key.trim())
+  } catch {
+    return { ok: false, error: 'Access keys require a secure (https) connection' }
+  }
   if (hash === ACCESS_KEY_HASH) {
     state = { authorized: true, token: null, plan: 'founder', name: 'Ayoub' }
     emit()
