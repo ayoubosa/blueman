@@ -185,13 +185,13 @@ export default function App({ onExit, onLogout }) {
         <header style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap', padding: '18px 32px', borderBottom: '1px solid rgba(99,140,200,0.08)' }}>
           <div style={{ minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <h1 style={{ margin: 0, fontSize: '21px', fontWeight: 600, letterSpacing: '-0.4px', color: '#e8eefa', whiteSpace: 'nowrap' }}>Good morning, Ayoub</h1>
+              <h1 style={{ margin: 0, fontSize: '21px', fontWeight: 600, letterSpacing: '-0.4px', color: '#e8eefa', whiteSpace: 'nowrap' }}>{(() => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening' })()}, Ayoub</h1>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', background: live ? 'rgba(34,211,238,0.07)' : 'rgba(251,191,36,0.08)', border: '1px solid ' + (live ? 'rgba(34,211,238,0.22)' : 'rgba(251,191,36,0.28)'), borderRadius: '999px', padding: '5px 12px', fontSize: '11px', color: live ? '#7dd3e0' : '#e7c06a', whiteSpace: 'nowrap' }}>
                 <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: live ? '#22d3ee' : '#fbbf24', boxShadow: '0 0 8px 2px ' + (live ? 'rgba(34,211,238,0.7)' : 'rgba(251,191,36,0.6)'), animation: 'jv-dot 2.2s ease-in-out infinite' }} />
                 {live ? 'Blueman online' : 'Demo mode · backend offline'}
               </span>
             </div>
-            <div style={{ fontFamily: "'Space Mono',monospace", fontSize: '11px', color: '#56688c', marginTop: '5px', letterSpacing: '0.4px' }}>Monday · June 30, 2026 · 09:14 — 4 active workflows</div>
+            <div style={{ fontFamily: "'Space Mono',monospace", fontSize: '11px', color: '#56688c', marginTop: '5px', letterSpacing: '0.4px' }}>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).replace(/,/g, ' ·')} — 4 active workflows</div>
           </div>
 
           <div style={{ flex: 1, minWidth: '16px' }} />

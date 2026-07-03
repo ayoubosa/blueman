@@ -53,6 +53,12 @@ export async function loginWithBackend(email, password) {
       return { ok: false, error: detail }
     }
     const data = await res.json()
+    // Valid credentials are not enough — the platform is for paying
+    // customers only. Anyone can self-register via the API (plan "none"),
+    // and they must not get past the gate.
+    if (!data.plan || data.plan === 'none') {
+      return { ok: false, error: 'This account has no active subscription. Request a demo to get started.' }
+    }
     state = { authorized: true, token: data.access_token, plan: data.plan, name: email.split('@')[0] }
     emit()
     return { ok: true }

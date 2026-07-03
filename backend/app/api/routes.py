@@ -74,6 +74,12 @@ async def chat(
 ):
     messages = [m.model_dump() for m in body.messages]
 
+    # Fail fast with a clear status when the LLM isn't configured. For the
+    # streaming path especially: raising inside the generator would kill
+    # the connection mid-stream with a bare 500 after headers are sent.
+    if not llm.available:
+        raise HTTPException(503, "LLM provider not configured")
+
     if body.stream:
         async def sse():
             async for delta in llm.stream(messages):
@@ -166,6 +172,8 @@ DIGEST_PROMPT = (
 
 @router.get("/api/digest")
 async def get_digest(user: User = Depends(get_paying_user), db: Session = Depends(get_db)):
+    if not llm.available:
+        raise HTTPException(503, "LLM provider not configured")
     result = await brain.think(
         db, user.id, user.display_name, [{"role": "user", "content": DIGEST_PROMPT}]
     )
