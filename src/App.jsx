@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { SPRING, Hoverable } from './ui.jsx'
 import { isLive } from './api.js'
+import Orb from './Orb.jsx'
 import UsageBar from './UsageBar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Briefing from './pages/Briefing.jsx'
@@ -26,7 +27,7 @@ const NAV_ICONS = {
   Settings: <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="8" x2="20" y2="8" /><circle cx="9" cy="8" r="2.2" /><line x1="4" y1="16" x2="20" y2="16" /><circle cx="15" cy="16" r="2.2" /></svg>,
 }
 
-export default function App({ onExit }) {
+export default function App({ onExit, onLogout }) {
   const [collapsed, setCollapsed] = useState(false)
   const [active, setActive] = useState('Dashboard')
   const [paletteOpen, setPaletteOpen] = useState(false)
@@ -130,11 +131,7 @@ export default function App({ onExit }) {
       {/* SIDEBAR */}
       <aside style={{ width: W, flex: 'none', display: 'flex', flexDirection: 'column', padding: collapsed ? '24px 16px' : '24px 20px', borderRight: '1px solid rgba(99,140,200,0.08)', background: 'rgba(8,11,20,0.6)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', position: 'relative', zIndex: 2, height: '100vh', transition: `width 0.4s ${SPRING}, padding 0.4s` }}>
         <div onClick={onExit} title="Back to site" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '4px 2px 0', cursor: onExit ? 'pointer' : 'default' }}>
-          <div style={{ position: 'relative', width: '40px', height: '40px', flex: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1.5px solid rgba(34,211,238,0.32)', borderTopColor: 'rgba(34,211,238,0.95)', animation: 'jv-spin 6s linear infinite' }} />
-            <div style={{ position: 'absolute', inset: '6px', borderRadius: '50%', border: '1.5px solid rgba(59,130,246,0.28)', borderBottomColor: 'rgba(96,165,250,0.9)', animation: 'jv-spinrev 4.5s linear infinite' }} />
-            <div style={{ width: '13px', height: '13px', borderRadius: '50%', background: 'radial-gradient(circle,#a5f3fc,#22d3ee 60%,#3b82f6)', animation: 'jv-core 3.4s ease-in-out infinite' }} />
-          </div>
+          <Orb size={40} state={live ? 'active' : 'idle'} />
           <div style={brandTextStyle}>
             <div style={{ fontWeight: 600, fontSize: '17px', letterSpacing: '3px', lineHeight: 1, background: 'linear-gradient(120deg,#e0f2fe,#67e8f9)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>BLUEMAN</div>
             <div style={{ fontFamily: "'Space Mono',monospace", fontSize: '9px', letterSpacing: '2px', color: '#56688c', marginTop: '4px' }}>AGENT OS · v4.2</div>
@@ -172,6 +169,12 @@ export default function App({ onExit }) {
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.4s', transform: collapsed ? 'rotate(180deg)' : 'none' }}><path d="M15 18l-6-6 6-6" /></svg>
             <span style={navLabelStyle}>Collapse</span>
           </Hoverable>
+          {onLogout && (
+            <Hoverable as="button" baseStyle={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', background: 'transparent', border: '1px solid rgba(148,178,224,0.08)', color: '#56688c', borderRadius: '12px', padding: '9px', cursor: 'pointer', fontFamily: "'Inter',sans-serif", fontSize: '12px' }} hoverStyle={{ borderColor: 'rgba(248,113,113,0.3)', color: '#f59e9e' }} onClick={onLogout}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+              <span style={navLabelStyle}>Sign out</span>
+            </Hoverable>
+          )}
         </div>
       </aside>
 

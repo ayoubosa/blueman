@@ -47,3 +47,10 @@ html, body {
 @keyframes jv-palette { from { opacity: 0; transform: translateY(-8px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes jv-veil { from { opacity: 0; } to { opacity: 1; } }
 @keyframes jv-sweep { 0% { transform: translateX(-120%); } 100% { transform: translateX(220%); } }
+
+/* ===== v2 additions: orb states + gallery ===== */
+@keyframes jv-core-hot { 0%,100% { box-shadow: 0 0 18px 4px rgba(34,211,238,0.7), 0 0 60px 16px rgba(37,99,235,0.3) inset; transform: scale(1); } 50% { box-shadow: 0 0 34px 10px rgba(165,243,252,0.9), 0 0 80px 20px rgba(37,99,235,0.45) inset; transform: scale(1.12); } }
+
+.bm-gallery { display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 4px 22px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+.bm-gallery > * { scroll-snap-align: center; flex: none; }
+.bm-gallery::-webkit-scrollbar { height: 6px; }
